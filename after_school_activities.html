@@ -14,15 +14,17 @@
         <div class="row justify-content-center">
             <header>
                 <h1 class="shadow-sm p-3 mb-2 bg-white rounded">After School Classes and Activities</h1>
-                <nav>
-                    <div id="navbar" class="text-center">
-                        <button type="button" class="btn btn-outline-dark">Checkout</button>
-                    </div>
-                </nav>
+            </div>
+            <br>
+                <h3 class="text-center">Lessons</h3>
+                <br>
             </header>
-        </div>
-        <menu>
+        <main>
+        </main>
+            <menu>
             <div class="row">
+                <button type="button" class="btn btn-outline-dark" style="margin-left: 1370px;position: fixed;">Checkout</button>
+
                 <div id="sort-menu col-2" class="shadow-sm p-3 mb-2 bg-white rounded">
                     <Strong>Sort Options</Strong>
                     <div class="form-check">
@@ -52,14 +54,22 @@
                     </div>
                 </div>
             </div>
-        </menu>
+            </menu>
     </div>
+
     
     <script>
         let afterSchool = new Vue({
             data:{
                 lessons:lessons
+            },
+            computed:{
+
+            },
+            methods:{
+
             }
+            
         })
     </script>
 
