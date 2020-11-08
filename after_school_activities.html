@@ -1,106 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="lessons.js"></script>
-    <title>After School Classes and Activities</title>
-</head>
-<body>
-    <div id="app">
-    <div class="container-fluid">
-        <div class="row justify-content-center">
-            <header>
-                <h1 class="shadow-sm p-3 mb-2 bg-white rounded">After School Classes and Activities</h1>
-            </div>
-            <br>
-                <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Lessons</h2>
-                <br>
-            </header>
-        <main>
-        </main>
-            <menu>
-            <div class="row">
-                <button type="button" class="btn btn-outline-dark" style="margin-left: 1370px;position: fixed;">Checkout</button>
-                <div style="position: fixed;">
-                <div id="sort-menu col-2" class="shadow-sm p-3 mb-2 bg-white rounded mr-5">
-                    <Strong>Sort Options</Strong>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="subject" name="sort">
-                        <label class="form-check-label" for="defaultCheck1"> Subject </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="location" name="sort">
-                        <label class="form-check-label" for="defaultCheck1"> Location </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="price" name="sort">
-                        <label class="form-check-label" for="defaultCheck1"> Price </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="availability" name="sort">
-                        <label class="form-check-label" for="defaultCheck1"> Availability </label>
-                    </div>
-                    <Strong>Sort By</Strong>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="availability" name="sort-by">
-                        <label class="form-check-label" for="defaultCheck1"> Ascending </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="" name="sort-by">
-                        <label class="form-check-label" for="defaultCheck1"> Descending </label>
-                    </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+            integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+            crossorigin="anonymous"
+        />
+        <script
+            src="https://code.jquery.com/jquery-3.5.1.slim.js"
+            integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM="
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+            crossorigin="anonymous"
+        ></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="lessons.js"></script>
+        <title>After School Classes and Activities</title>
+    </head>
+    <body>
+        <div id="app">
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <header>
+                        <h1 class="shadow-sm p-3 mb-2 bg-white rounded">After School Classes and Activities</h1>
+                        <br />
+                        <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Lessons</h2>
+                        <br />
+                    </header>
                 </div>
-            </div>
 
-                <div v-for="(lesson,i) in lessons" class="mb-4 mt-5" style="margin-left: 11%;">                 
-                    <div class="card" style="width: 18rem; height: 450px;">
-                        <img class="card-img-top" v-bind:src= "lesson.img" height="200px" width="200px" alt="Card image cap">
-                        <div class="card-body">
-                          <h5 class="card-title">{{ lesson.subject }}</h5>
-                          <p class="card-text"><strong>Location: </strong>{{ lesson.location }}</p>
-                          <p class="card-text"><strong>Cost: </strong>{{ lesson.price }}</p>
-                          <p class="card-text"><strong>Spaces Left: </strong>{{ lesson.space }}</p>
-                          <a href="#" class="btn btn-primary">Add to cart <i class="fas fa-cart-plus"></i></a>
+                <menu>
+                    <div class="row">
+                        <button type="button" class="btn btn-outline-dark" style="margin-left: 1370px; position: fixed">Checkout</button>
+                        <br />
+                        <button type="button" class="btn btn-outline-dark" style="margin-left: 1370px; position: fixed; margin-top: 3%">
+                            Cart {{ cartCount }}
+                        </button>
+                        <div style="position: fixed">
+                            <div id="sort-menu col-2" class="shadow-sm p-3 mb-2 bg-white rounded mr-5">
+                                <strong>Sort Options</strong>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" value="subject" name="sort" @click="addSortValue(sortName[0])" />
+                                    <label class="form-check-label" for="defaultCheck1"> Subject </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" value="location" name="sort" @click="addSortValue(sortName[1])" />
+                                    <label class="form-check-label" for="defaultCheck1"> Location </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" value="price" name="sort" @click="addSortValue(sortName[2])" />
+                                    <label class="form-check-label" for="defaultCheck1"> Price </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" value="availability" name="sort" @click="addSortValue(sortName[3])" />
+                                    <label class="form-check-label" for="defaultCheck1"> Availability </label>
+                                </div>
+                                <strong>Sort By</strong>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" value="ascending" name="sort-by" @click="addSortBy(0)" />
+                                    <label class="form-check-label" for="defaultCheck1"> Ascending </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" value="descending" name="sort-by" v-if@click="addSortBy(1)" />
+                                    <label class="form-check-label" for="defaultCheck1"> Descending </label>
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                    </div>                    
-                </div>
-                </div>
-            </menu>
-    </div>
-</div>
-    
-    <script>
-        let afterSchool = new Vue({
-            el:'#app',
-            data:{
-                lessons: lessons,
-            },
-            computed:{
-                displayProducts(){
-                    for(i = 0; i<lessons.length; i++){
-                        if (i%3 == 0){
+                        {{ sortedLessons }}
+                        <div v-for="lesson in sortedLessons" class="mb-4 mt-5" style="margin-left: 11%">
+                            <div class="card" style="width: 18rem; height: 450px">
+                                <img class="card-img-top" v-bind:src="lesson.img" height="200px" width="200px" alt="Card image cap" />
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ lesson.subject }}</h5>
+                                    <p class="card-text"><strong>Location: </strong>{{ lesson.location }}</p>
+                                    <p class="card-text"><strong>Price (AED): </strong>{{ lesson.price }}</p>
+                                    <p class="card-text"><strong>Spaces Left: </strong>{{ lesson.space }}</p>
+                                    <button class="btn btn-primary" @click="addToCart(lesson)">Add to cart <i class="fas fa-cart-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </menu>
+            </div>
+        </div>
 
-                        }
-                    }
+        <script>
+            let afterSchool = new Vue({
+                el: "#app",
+                data: {
+                    lessons: lessons,
+                    cart: [],
+                    sortName: ["subject", "location", "price", "spaces"],
+                    sortValue: "",
+                    sortBy: 0,
+                    lessonsArray: lessons.slice(0),
                 },
-                organizeProduct(){
-
-                }
-
-            },
-            methods:{
-
-            }
-            
-        })
-    </script>
-
-</body>
+                computed: {
+                    cartCount() {
+                        console.log(this.cart);
+                        return this.cart.length;
+                    },
+                    sortedLessons: function () {
+                        console.log(this.lessonsArray);
+                        let sortVal = this.sortValue;
+                        console.log(sortVal + "11");
+                        function compare(a, b) {
+                            if (a[sortVal] > b[sortVal]) return 1;
+                            if (a[sortVal] < b[sortVal]) return -1;
+                            return 0;
+                        }
+                        if (this.sortBy == 0) return this.lessonsArray.sort(compare);
+                        else return this.lessonsArray.sort(compare).reverse();
+                    },
+                },
+                methods: {
+                    addToCart(lesson) {
+                        this.cart.push(lesson.id);
+                        console.log(this.cart);
+                    },
+                    addSortValue(type) {
+                        this.sortValue = type;
+                        console.log(this.sortValue);
+                        console.log(this.lessons);
+                    },
+                    addSortBy(value) {
+                        console.log(value);
+                        this.sortBy = value;
+                    },
+                },
+            });
+        </script>
+    </body>
 </html>
