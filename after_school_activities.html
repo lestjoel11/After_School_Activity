@@ -27,12 +27,12 @@
     <body>
         <div id="app">
             <div class="container-fluid">
-                <div class="row justify-content-center">
+                <div class="">
                     <header>
-                        <h1 class="shadow-sm p-3 mb-2 bg-white rounded">After School Classes and Activities</h1>
-                        <br />
-                        <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Lessons</h2>
-                        <br />
+                        <h1 class="text-center shadow-sm p-3 mb-2 bg-white rounded">After School Classes and Activities</h1>
+                        <div class="row justify-content-center">
+                            <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Classes</h2>
+                        </div>
                     </header>
                 </div>
 
@@ -41,7 +41,9 @@
                         <button type="button" class="btn btn-outline-dark" style="margin-left: 1370px; position: fixed">Checkout</button>
                         <br />
                         <button type="button" class="btn btn-outline-dark" style="margin-left: 1370px; position: fixed; margin-top: 3%">
-                            Cart {{ cartCount }}
+                            <a href="#cart" style="text-decoration: none" role="button"
+                                ><i class="fas fa-cart-plus"></i> <span v-if="cartCount>0">Items: {{ cartCount }}</span></a
+                            >
                         </button>
                         <div style="position: fixed">
                             <div id="sort-menu col-2" class="shadow-sm p-3 mb-2 bg-white rounded mr-5">
@@ -68,26 +70,46 @@
                                     <label class="form-check-label" for="defaultCheck1"> Ascending </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" value="descending" name="sort-by" v-if@click="addSortBy(1)" />
+                                    <input class="form-check-input" type="radio" value="descending" name="sort-by" @click="addSortBy(1)" />
                                     <label class="form-check-label" for="defaultCheck1"> Descending </label>
                                 </div>
                             </div>
                         </div>
-                        {{ sortedLessons }}
-                        <div v-for="lesson in sortedLessons" class="mb-4 mt-5" style="margin-left: 11%">
+                        <div v-for="lesson in sortedLessons" class="mb-4 mt-0" style="margin-left: 11%">
                             <div class="card" style="width: 18rem; height: 450px">
                                 <img class="card-img-top" v-bind:src="lesson.img" height="200px" width="200px" alt="Card image cap" />
                                 <div class="card-body">
                                     <h5 class="card-title">{{ lesson.subject }}</h5>
                                     <p class="card-text"><strong>Location: </strong>{{ lesson.location }}</p>
                                     <p class="card-text"><strong>Price (AED): </strong>{{ lesson.price }}</p>
-                                    <p class="card-text"><strong>Spaces Left: </strong>{{ lesson.space }}</p>
+                                    <p class="card-text"><strong>Spaces Left: </strong>{{ lesson.space - cartItemCount(lesson.id) }}</p>
                                     <button class="btn btn-primary" @click="addToCart(lesson)">Add to cart <i class="fas fa-cart-plus"></i></button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </menu>
+                <div class="cart-title row justify-content-center" v-if="cart.length>0" id="cart">
+                    <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Cart</h2>
+                </div>
+
+                <div class="row justify-content-center" v-for="item in viewCart">
+                    <div class="card mb-3" style="max-width: 23rem">
+                        <div class="row no-gutters">
+                            <div class="col-md-4">
+                                <img v-bind:src="item.img" class="card-img" alt="..." />
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item.subject }}</h5>
+                                    <p class="card-text"><strong>Quantity: </strong> {{ item.inCartQuantity }}</p>
+                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                    <button class="btn btn-primary" @click="addToCart(lesson)">Remove from cart <i class="fas fa-cart-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -97,20 +119,19 @@
                 data: {
                     lessons: lessons,
                     cart: [],
+                    cartItemName: [],
                     sortName: ["subject", "location", "price", "spaces"],
                     sortValue: "",
                     sortBy: 0,
+                    cartItems: [],
                     lessonsArray: lessons.slice(0),
                 },
                 computed: {
                     cartCount() {
-                        console.log(this.cart);
                         return this.cart.length;
                     },
                     sortedLessons: function () {
-                        console.log(this.lessonsArray);
                         let sortVal = this.sortValue;
-                        console.log(sortVal + "11");
                         function compare(a, b) {
                             if (a[sortVal] > b[sortVal]) return 1;
                             if (a[sortVal] < b[sortVal]) return -1;
@@ -119,19 +140,59 @@
                         if (this.sortBy == 0) return this.lessonsArray.sort(compare);
                         else return this.lessonsArray.sort(compare).reverse();
                     },
+                    viewCart() {
+                        var count = {};
+                        this.cart.forEach(function (i) {
+                            count[i] = (count[i] || 0) + 1;
+                        });
+                        let cartSize = count;
+
+                        for (i = 0; i < this.cart.length; i++) {
+                            for (lessonObj of lessons) {
+                                if (this.cart[i] == lessonObj.id) {
+                                    if (this.cartItems.length < 1) {
+                                        lessonObj.inCart = true;
+                                        lessonObj.inCartQuantity = 1;
+                                        this.cartItems.push(lessonObj);
+                                    } else if (this.cartItems.length >= 1 && lessonObj.inCart) {
+                                        console.log("actually");
+                                        for (item of this.cartItems) {
+                                            if (item.inCart) {
+                                                item.inCartQuantity = cartSize[item.id];
+                                            }
+                                        }
+                                    } else if (this.cartItems.length >= 1 && !lessonObj.inCart) {
+                                        console.log("here");
+                                        lessonObj.inCart = true;
+                                        lessonObj.inCartQuantity = 1;
+                                        this.cartItems.push(lessonObj);
+                                    }
+                                }
+                            }
+                        }
+                        console.log(this.cartItems);
+                        return this.cartItems;
+                    },
                 },
+
                 methods: {
                     addToCart(lesson) {
                         this.cart.push(lesson.id);
-                        console.log(this.cart);
+                        this.cartItemName.push(lesson.subject);
+                    },
+                    cartItemCount(lessonID) {
+                        let items = 0;
+                        for (i = 0; i < this.cart.length; i++) {
+                            if (this.cart[i] === lessonID) {
+                                items++;
+                            }
+                        }
+                        return items;
                     },
                     addSortValue(type) {
                         this.sortValue = type;
-                        console.log(this.sortValue);
-                        console.log(this.lessons);
                     },
                     addSortBy(value) {
-                        console.log(value);
                         this.sortBy = value;
                     },
                 },
