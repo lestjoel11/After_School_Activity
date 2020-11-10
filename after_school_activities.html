@@ -40,10 +40,14 @@
                     <div class="row">
                         <button type="button" class="btn btn-outline-dark" style="margin-left: 1370px; position: fixed">Checkout</button>
                         <br />
-                        <button type="button" class="btn btn-outline-dark" style="margin-left: 1370px; position: fixed; margin-top: 3%">
-                            <a href="#cart" style="text-decoration: none" role="button"
-                                ><i class="fas fa-cart-plus"></i> <span v-if="cartCount>0">Items: {{ cartCount }}</span></a
-                            >
+                        <button
+                            type="button"
+                            class="btn btn-outline-dark"
+                            style="margin-left: 1370px; position: fixed; margin-top: 3%"
+                            @click="page('cart')"
+                            v-if="cart.length>0"
+                        >
+                            <i class="fas fa-cart-plus"></i> <span v-if="cartCount>0">Items: {{ cartCount }}</span>
                         </button>
                         <div style="position: fixed">
                             <div id="sort-menu col-2" class="shadow-sm p-3 mb-2 bg-white rounded mr-5">
@@ -82,29 +86,33 @@
                                     <h5 class="card-title">{{ lesson.subject }}</h5>
                                     <p class="card-text"><strong>Location: </strong>{{ lesson.location }}</p>
                                     <p class="card-text"><strong>Price (AED): </strong>{{ lesson.price }}</p>
-                                    <p class="card-text"><strong>Spaces Left: </strong>{{ lesson.space - cartItemCount(lesson.id) }}</p>
+                                    <p class="card-text"><strong>Spaces Left: </strong>{{ lesson.space }}</p>
                                     <button class="btn btn-primary" @click="addToCart(lesson)">Add to cart <i class="fas fa-cart-plus"></i></button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </menu>
-                <div class="cart-title row justify-content-center" v-if="cart.length>0" id="cart">
-                    <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Cart</h2>
-                </div>
+                <div v-if="state ==='cart'">
+                    <div class="cart-title row justify-content-center" v-if="cart.length>0" id="cart">
+                        <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Cart</h2>
+                    </div>
 
-                <div class="row justify-content-center" v-for="item in viewCart">
-                    <div class="card mb-3" style="max-width: 23rem">
-                        <div class="row no-gutters">
-                            <div class="col-md-4">
-                                <img v-bind:src="item.img" class="card-img" alt="..." />
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ item.subject }}</h5>
-                                    <p class="card-text"><strong>Quantity: </strong> {{ item.inCartQuantity }}</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                    <button class="btn btn-primary" @click="addToCart(lesson)">Remove from cart <i class="fas fa-cart-plus"></i></button>
+                    <div class="row justify-content-center" v-for="item in viewCart">
+                        <div class="card mb-3" style="max-width: 23rem">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                    <img v-bind:src="item.img" class="card-img" alt="..." />
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ item.subject }}</h5>
+                                        <p class="card-text"><strong>Quantity: </strong> {{ item.inCartQuantity }}</p>
+                                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                        <button class="btn btn-primary" @click="removeItem('item.id')">
+                                            Remove from cart <i class="fas fa-cart-plus"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -119,27 +127,30 @@
                 data: {
                     lessons: lessons,
                     cart: [],
-                    cartItemName: [],
-                    sortName: ["subject", "location", "price", "spaces"],
+                    sortName: ["subject", "location", "price", "inCartQuantity"],
                     sortValue: "",
                     sortBy: 0,
                     cartItems: [],
-                    lessonsArray: lessons.slice(0),
+                    state: "",
                 },
                 computed: {
                     cartCount() {
                         return this.cart.length;
                     },
+
                     sortedLessons: function () {
+                        let lessonsArray = lessons.slice(0);
                         let sortVal = this.sortValue;
                         function compare(a, b) {
                             if (a[sortVal] > b[sortVal]) return 1;
                             if (a[sortVal] < b[sortVal]) return -1;
                             return 0;
                         }
-                        if (this.sortBy == 0) return this.lessonsArray.sort(compare);
-                        else return this.lessonsArray.sort(compare).reverse();
+                        if (this.sortBy == 0 && this.sortValue.length > 0) return lessonsArray.sort(compare).reverse();
+                        else if (this.sortBy == 1 && this.sortValue.length > 0) return lessonsArray.sort(compare);
+                        else return lessonsArray;
                     },
+
                     viewCart() {
                         var count = {};
                         this.cart.forEach(function (i) {
@@ -155,14 +166,12 @@
                                         lessonObj.inCartQuantity = 1;
                                         this.cartItems.push(lessonObj);
                                     } else if (this.cartItems.length >= 1 && lessonObj.inCart) {
-                                        console.log("actually");
                                         for (item of this.cartItems) {
                                             if (item.inCart) {
                                                 item.inCartQuantity = cartSize[item.id];
                                             }
                                         }
                                     } else if (this.cartItems.length >= 1 && !lessonObj.inCart) {
-                                        console.log("here");
                                         lessonObj.inCart = true;
                                         lessonObj.inCartQuantity = 1;
                                         this.cartItems.push(lessonObj);
@@ -170,7 +179,6 @@
                                 }
                             }
                         }
-                        console.log(this.cartItems);
                         return this.cartItems;
                     },
                 },
@@ -178,7 +186,11 @@
                 methods: {
                     addToCart(lesson) {
                         this.cart.push(lesson.id);
-                        this.cartItemName.push(lesson.subject);
+                        for (i = 0; i < this.lessons.length; i++) {
+                            if (lesson.id == lessons[i].id) {
+                                lessons[i].space--;
+                            }
+                        }
                     },
                     cartItemCount(lessonID) {
                         let items = 0;
@@ -195,6 +207,16 @@
                     addSortBy(value) {
                         this.sortBy = value;
                     },
+                    page(location) {
+                        this.state = location;
+                    },
+                    // removeItem(lesson) {
+                    //     let position = this.cart.indexOf(lesson);
+                    //     this.cart[position] = 0;
+                    //     for(item of this.cartItems){
+
+                    //     }
+                    // },
                 },
             });
         </script>
