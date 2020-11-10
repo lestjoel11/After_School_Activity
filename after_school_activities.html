@@ -93,27 +93,30 @@
                         </div>
                     </div>
                 </menu>
-                <div v-if="state ==='cart'">
+                <div v-if="state ==='cart' && cart.length>0">
                     <div class="cart-title row justify-content-center" v-if="cart.length>0" id="cart">
                         <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Cart</h2>
                     </div>
-
-                    <div class="row justify-content-center" v-for="item in viewCart">
-                        <div class="card mb-3" style="max-width: 23rem">
-                            <div class="row no-gutters">
-                                <div class="col-md-4">
-                                    <img v-bind:src="item.img" class="card-img" alt="..." />
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ item.subject }}</h5>
-                                        <p class="card-text"><strong>Quantity: </strong> {{ item.inCartQuantity }}</p>
-                                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                        <button class="btn btn-primary" @click="removeItem('item.id')">
-                                            Remove from cart <i class="fas fa-cart-plus"></i>
-                                        </button>
+                    <div  v-for="item in viewCart" >
+                    <div v-if="item.inCartQuantity<=0"></div>
+                    <div class="row justify-content-center"v-else >
+                            <div class="card mb-3" style="max-width: 23rem">
+                                <div class="row no-gutters">
+                                    <div class="col-md-4">
+                                        <img v-bind:src="item.img" class="card-img" alt="..." />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ item.subject }}</h5>
+                                            <p class="card-text"><strong>Quantity: </strong> {{ item.inCartQuantity }}</p>
+                                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                            <button class="btn btn-primary" @click="removeItem(item.id)">
+                                                Remove from cart <i class="fas fa-cart-plus"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -132,6 +135,7 @@
                     sortBy: 0,
                     cartItems: [],
                     state: "",
+                    remove:[],
                 },
                 computed: {
                     cartCount() {
@@ -162,23 +166,40 @@
                             for (lessonObj of lessons) {
                                 if (this.cart[i] == lessonObj.id) {
                                     if (this.cartItems.length < 1) {
+                                console.log(2);
+
                                         lessonObj.inCart = true;
                                         lessonObj.inCartQuantity = 1;
                                         this.cartItems.push(lessonObj);
                                     } else if (this.cartItems.length >= 1 && lessonObj.inCart) {
+                                console.log(3);
+
                                         for (item of this.cartItems) {
                                             if (item.inCart) {
+                                console.log(4);
+
                                                 item.inCartQuantity = cartSize[item.id];
                                             }
                                         }
                                     } else if (this.cartItems.length >= 1 && !lessonObj.inCart) {
+                                console.log(5);
                                         lessonObj.inCart = true;
                                         lessonObj.inCartQuantity = 1;
                                         this.cartItems.push(lessonObj);
                                     }
                                 }
+                                if (this.remove[0]==1){
+                                        for(k=0;k<this.cartItems.length;k++){
+                                            if (this.cartItems[k].id == this.remove[1]){
+                                                this.cartItems.splice(k,1);
+                                                this.remove[0] = 0;
+                                                this.remove[1] = 0;
+                                            }
+                                        }
+                                    }
                             }
                         }
+                        console.log(this.cartItems);
                         return this.cartItems;
                     },
                 },
@@ -210,13 +231,25 @@
                     page(location) {
                         this.state = location;
                     },
-                    // removeItem(lesson) {
-                    //     let position = this.cart.indexOf(lesson);
-                    //     this.cart[position] = 0;
-                    //     for(item of this.cartItems){
-
-                    //     }
-                    // },
+                    removeItem(lessonID) {
+                        let position = this.cart.indexOf(lessonID);
+                        this.cart.splice(position,1);
+                        for (item of this.cartItems) {
+                            if (item.id == lessonID) {
+                                item.inCartQuantity--;
+                                if (item.inCartQuantity == 0) {
+                                    item.inCart = false;
+                                    this.remove = [1, item.id];
+                                    for (lesson of this.lessons) {
+                                        if (lessonID == lesson.id) {
+                                            lesson.inCart = false;
+                                            lesson.inCartQuantity = 0;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
                 },
             });
         </script>
