@@ -100,40 +100,74 @@
                         </div>
                     </menu>
                 </div>
-
-                <div class="cart-title row justify-content-center" v-if="cart.length>0" id="cart">
-                    <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Cart</h2>
+                <div class="row justify-content-center">
+                    <div class="" v-if="state === 'checkout' && cart.length>0">
+                        <form class="mt-2">
+                            <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded" style="margin: auto">Checkout</h2>
+                            <div class="form-group row">
+                                <label for="inputName" class="col-sm-2 col-form-label">Name</label>
+                                <div class="col-sm-10">
+                                    <input
+                                        type="text"
+                                        v-model.trim="order.name"
+                                        class="form-control"
+                                        id="order_name"
+                                        pattern="[a-zA-Z]*"
+                                        autocomplete="nope"
+                                    />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputPassword" class="col-sm-2 col-form-label">Phone</label>
+                                <div class="col-sm-10">
+                                    <input type="number" v-model.number="order.phone" class="form-control" id="inputPassword" />
+                                </div>
+                            </div>
+                            <div class="form-group row justify-content-center">
+                                <button class="btn btn-primary" @click="submitCheckout">Checkout</button>
+                            </div>
+                        </form>
+                        <div>
+                            Order Details:-
+                            <br />
+                            Name: {{ order.name }}
+                            <br />
+                            Phone: {{ order.phone }}
+                            <br />
+                        </div>
+                    </div>
                 </div>
-                <div v-else="cartItems.length<=0" class="row d-flex justify-content-center">
-                    <h1>
-                        <button class="btn btn-lg btn-outline-dark btn-block mt-5" @click="page('lessons')">
-                            Your Cart is empty, Click here to go back to lessons
-                        </button>
-                    </h1>
-                </div>
-                <div v-if="state ==='cart' && cart.length>0">
-                    <button type="button" class="btn btn-outline-dark" style="margin-left: 1370px; position: fixed">Checkout</button>
-                    <br />
-                    <button type="button" class="btn btn-outline-dark mt-3" style="margin-left: 1370px; position: fixed" @click="page('lessons')">
-                        Back to lessons
+            </div>
+            <div class="cart-title row justify-content-center" v-if="cart.length>0 && state=='cart'" id="cart">
+                <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded" v-if="state!='checkout'">Cart</h2>
+            </div>
+            <div v-if="cartItems.length<=0 && state=='cart'" class="row d-flex justify-content-center">
+                <h1>
+                    <button class="btn btn-lg btn-outline-dark btn-block mt-5" @click="page('lessons')">
+                        Your Cart is empty, Click here to go back to lessons
                     </button>
+                </h1>
+            </div>
+            <div v-if="state ==='cart' || state === 'checkout' && cart.length>0">
+                <button type="button" class="btn btn-outline-dark" style="margin-left: 1370px; position: fixed" @click="page('checkout')">Checkout</button>
+                <br />
+                <button type="button" class="btn btn-outline-dark mt-3" style="margin-left: 1370px; position: fixed" @click="page('lessons')">
+                    Back to lessons
+                </button>
 
-                    <div v-for="item in viewCart">
-                        <div class="row justify-content-center">
-                            <div class="card mb-3" style="max-width: 23rem">
-                                <div class="row no-gutters">
-                                    <div class="col-md-4">
-                                        <img v-bind:src="item.img" class="card-img" alt="..." />
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ item.subject }}</h5>
-                                            <p class="card-text"><strong>Quantity: </strong> {{ item.inCartQuantity }}</p>
-                                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                            <button class="btn btn-primary" @click="removeItem(item.id)">
-                                                Remove from cart <i class="fas fa-cart-plus"></i>
-                                            </button>
-                                        </div>
+                <div v-for="item in viewCart">
+                    <div class="row justify-content-center">
+                        <div class="card mb-3" style="max-width: 23rem">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                    <img v-bind:src="item.img" class="card-img" alt="..." />
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ item.subject }}</h5>
+                                        <p class="card-text"><strong>Quantity: </strong> {{ item.inCartQuantity }}</p>
+                                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                        <button class="btn btn-primary" @click="removeItem(item.id)">Remove from cart <i class="fas fa-cart-plus"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -154,6 +188,10 @@
                     cartItems: [],
                     state: "lessons",
                     remove: [],
+                    order: {
+                        name: "",
+                        phone: "",
+                    },
                 },
                 computed: {
                     cartCount() {
@@ -188,6 +226,9 @@
                 methods: {
                     canAddToCart(lesson) {
                         return lesson.availableInventory > this.cartItemCount(lesson.id);
+                    },
+                    submitCheckout() {
+                        alert("Sucessfully Submitted");
                     },
                     addToCart(lesson) {
                         this.cart.push(lesson.id);
@@ -263,6 +304,20 @@
                             }
                         }
                     },
+                    //     onlyText() {
+                    //         document.querySelector(function () {
+                    //             document.querySelector("#order_name").keydown(function (e) {
+                    //                 if (e.shiftKey || e.ctrlKey || e.altKey) {
+                    //                     e.preventDefault();
+                    //                 } else {
+                    //                     var key = e.keyCode;
+                    //                     if (!(key == 8 || key == 32 || key == 46 || (key >= 35 && key <= 40) || (key >= 65 && key <= 90))) {
+                    //                         e.preventDefault();
+                    //                     }
+                    //                 }
+                    //             });
+                    //         });
+                    //     },
                 },
             });
         </script>
