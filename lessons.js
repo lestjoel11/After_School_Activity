@@ -5,6 +5,7 @@ let lessons = [
 		location: 'Dubai',
 		price: '350',
 		space: '5',
+		availableInventory:'5',
 		inCart: false,
 		inCartQuantity: 0,
 		img: 'img/math.jpg'
@@ -15,6 +16,7 @@ let lessons = [
 		location: 'Abu Dhabi',
 		price: '310',
 		space: '5',
+		availableInventory:'5',
 		inCart: false,
 		inCartQuantity: 0,
 		img: 'img/english.jpg'
@@ -25,6 +27,7 @@ let lessons = [
 		location: 'Dubai',
 		price: '320',
 		space: '5',
+		availableInventory:'5',
 		inCart: false,
 		inCartQuantity: 0,
 		img: 'img/arabic.jpg'
@@ -35,6 +38,7 @@ let lessons = [
 		location: 'Sharjah',
 		price: '300',
 		space: '5',
+		availableInventory:'5',
 		inCart: false,
 		inCartQuantity: 0,
 		img: 'img/music.jpg'
@@ -45,6 +49,7 @@ let lessons = [
 		location: 'Dubai',
 		price: '305',
 		space: '5',
+		availableInventory:'5',
 		inCart: false,
 		inCartQuantity: 0,
 		img: 'img/art.jpg'
@@ -55,6 +60,7 @@ let lessons = [
 		location: 'Dubai',
 		price: '280',
 		space: '5',
+		availableInventory:'5',
 		inCart: false,
 		inCartQuantity: 0,
 		img: 'img/computer.jpg'
@@ -65,6 +71,7 @@ let lessons = [
 		location: 'Abu Dhabi',
 		price: '370',
 		space: '5',
+		availableInventory:'5',
 		inCart: false,
 		inCartQuantity: 0,
 		img: 'img/science.jpg'
@@ -75,6 +82,7 @@ let lessons = [
 		location: 'Dubai',
 		price: '320',
 		space: '5',
+		availableInventory:'5',
 		inCart: false,
 		inCartQuantity: 0,
 		img: 'img/accountancy.jpg'
@@ -85,6 +93,7 @@ let lessons = [
 		location: 'Dubai',
 		price: '290',
 		space: '5',
+		availableInventory:'5',
 		inCart: false,
 		inCartQuantity: 0,
 		img: 'img/biology.jpg'
@@ -95,6 +104,7 @@ let lessons = [
 		location: 'Dubai',
 		price: '295',
 		space: '5',
+		availableInventory:'5',
 		inCart: false,
 		inCartQuantity: 0,
 		img: 'img/physics.jpg'
