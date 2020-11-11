@@ -90,7 +90,7 @@
                                         </button>
                                         <button disabled="disabled" class="btn btn-primary" v-else>Add to cart <i class="fas fa-cart-plus"></i></button>
                                         <span v-if="lesson.availableInventory == cartItemCount(lesson.id)">All out!</span>
-                                        <span v-else-if="lesson.availableInventory - cartItemCount(lesson.id) < 5">
+                                        <span v-else-if="lesson.availableInventory - cartItemCount(lesson.id) <5">
                                             Only {{lesson.availableInventory - cartItemCount(lesson.id)}} left!
                                         </span>
                                         <span v-else>Buy now!</span>
