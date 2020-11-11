@@ -27,79 +27,99 @@
     <body>
         <div id="app">
             <div class="container-fluid">
-                <div class="">
+                <h1 class="text-center shadow-sm p-3 mb-2 bg-white rounded">After School Classes and Activities</h1>
+                <div v-if="state=='lessons'">
                     <header>
-                        <h1 class="text-center shadow-sm p-3 mb-2 bg-white rounded">After School Classes and Activities</h1>
                         <div class="row justify-content-center">
-                            <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Classes</h2>
+                            <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Lessons</h2>
                         </div>
                     </header>
+                    <menu>
+                        <div class="row">
+                            <br />
+                            <button
+                                type="button"
+                                class="btn btn-outline-dark"
+                                style="margin-left: 1370px; position: fixed; margin-top: 3%"
+                                @click="page('cart')"
+                                v-if="cart.length>0"
+                            >
+                                <i class="fas fa-cart-plus"></i>
+                                <span v-if="cartCount>0">Items: {{ cartCount }}</span>
+                            </button>
+                            <div style="position: fixed">
+                                <div id="sort-menu col-2" class="shadow-sm p-3 mb-2 bg-white rounded mr-5">
+                                    <strong>Sort Options</strong>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" value="subject" name="sort" v-model="sortValue" />
+                                        <label class="form-check-label" for="defaultCheck1"> Subject </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" value="location" name="sort" v-model="sortValue" />
+                                        <label class="form-check-label" for="defaultCheck1"> Location </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" value="price" name="sort" v-model="sortValue" />
+                                        <label class="form-check-label" for="defaultCheck1"> Price </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" value="inCartQuantity" name="sort" v-model="sortValue" />
+                                        <label class="form-check-label" for="defaultCheck1"> Availability </label>
+                                    </div>
+                                    <strong>Sort By</strong>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" value="0" name="sort-by" v-model="sortBy" />
+                                        <label class="form-check-label" for="defaultCheck1"> Ascending </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" value="1" name="sort-by" v-model="sortBy" />
+                                        <label class="form-check-label" for="defaultCheck1"> Descending </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-for="lesson in sortedLessons" class="mb-4 mt-0" style="margin-left: 11%">
+                                <div class="card" style="width: 18rem; height: 450px">
+                                    <img class="card-img-top" v-bind:src="lesson.img" height="200px" width="200px" alt="Card image cap" />
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ lesson.subject }}</h5>
+                                        <p class="card-text"><strong>Location: </strong>{{ lesson.location }}</p>
+                                        <p class="card-text"><strong>Price (AED): </strong>{{ lesson.price }}</p>
+                                        <p class="card-text"><strong>Spaces Left: </strong>{{ lesson.space }}</p>
+                                        <button class="btn btn-primary" v-if="canAddToCart(lesson)" @click="addToCart(lesson)">
+                                            Add to cart <i class="fas fa-cart-plus"></i>
+                                        </button>
+                                        <button disabled="disabled" class="btn btn-primary" v-else>Add to cart <i class="fas fa-cart-plus"></i></button>
+                                        <span v-if="lesson.availableInventory == cartItemCount(lesson.id)">All out!</span>
+                                        <span v-else-if="lesson.availableInventory - cartItemCount(lesson.id) < 5">
+                                            Only {{lesson.availableInventory - cartItemCount(lesson.id)}} left!
+                                        </span>
+                                        <span v-else>Buy now!</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </menu>
                 </div>
 
-                <menu>
-                    <div class="row">
-                        <button type="button" class="btn btn-outline-dark" style="margin-left: 1370px; position: fixed">Checkout</button>
-                        <br />
-                        <button
-                            type="button"
-                            class="btn btn-outline-dark"
-                            style="margin-left: 1370px; position: fixed; margin-top: 3%"
-                            @click="page('cart')"
-                            v-if="cart.length>0"
-                        >
-                            <i class="fas fa-cart-plus"></i> <span v-if="cartCount>0">Items: {{ cartCount }}</span>
+                <div class="cart-title row justify-content-center" v-if="cart.length>0" id="cart">
+                    <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Cart</h2>
+                </div>
+                <div v-else="cartItems.length<=0" class="row d-flex justify-content-center">
+                    <h1>
+                        <button class="btn btn-lg btn-outline-dark btn-block mt-5" @click="page('lessons')">
+                            Your Cart is empty, Click here to go back to lessons
                         </button>
-                        <div style="position: fixed">
-                            <div id="sort-menu col-2" class="shadow-sm p-3 mb-2 bg-white rounded mr-5">
-                                <strong>Sort Options</strong>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" value="subject" name="sort" v-model="sortValue" />
-                                    <label class="form-check-label" for="defaultCheck1"> Subject </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" value="location" name="sort" v-model="sortValue" />
-                                    <label class="form-check-label" for="defaultCheck1"> Location </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" value="price" name="sort" v-model="sortValue" />
-                                    <label class="form-check-label" for="defaultCheck1"> Price </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" value="inCartQuantity" name="sort" v-model="sortValue" />
-                                    <label class="form-check-label" for="defaultCheck1"> Availability </label>
-                                </div>
-                                <strong>Sort By</strong>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" value="0" name="sort-by" v-model="sortBy" />
-                                    <label class="form-check-label" for="defaultCheck1"> Ascending </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" value="1" name="sort-by" v-model="sortBy" />
-                                    <label class="form-check-label" for="defaultCheck1"> Descending </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div v-for="lesson in sortedLessons" class="mb-4 mt-0" style="margin-left: 11%">
-                            <div class="card" style="width: 18rem; height: 450px">
-                                <img class="card-img-top" v-bind:src="lesson.img" height="200px" width="200px" alt="Card image cap" />
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ lesson.subject }}</h5>
-                                    <p class="card-text"><strong>Location: </strong>{{ lesson.location }}</p>
-                                    <p class="card-text"><strong>Price (AED): </strong>{{ lesson.price }}</p>
-                                    <p class="card-text"><strong>Spaces Left: </strong>{{ lesson.space }}</p>
-                                    <button class="btn btn-primary" @click="addToCart(lesson)">Add to cart <i class="fas fa-cart-plus"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </menu>
+                    </h1>
+                </div>
                 <div v-if="state ==='cart' && cart.length>0">
-                    <div class="cart-title row justify-content-center" v-if="cart.length>0" id="cart">
-                        <h2 class="text-center shadow-sm p-3 mb-2 bg-white rounded">Cart</h2>
-                    </div>
+                    <button type="button" class="btn btn-outline-dark" style="margin-left: 1370px; position: fixed">Checkout</button>
+                    <br />
+                    <button type="button" class="btn btn-outline-dark mt-3" style="margin-left: 1370px; position: fixed" @click="page('lessons')">
+                        Back to lessons
+                    </button>
+
                     <div v-for="item in viewCart">
-                        <div v-if="item.inCartQuantity<=0"></div>
-                        <div class="row justify-content-center" v-else>
+                        <div class="row justify-content-center">
                             <div class="card mb-3" style="max-width: 23rem">
                                 <div class="row no-gutters">
                                     <div class="col-md-4">
@@ -132,7 +152,7 @@
                     sortValue: "",
                     sortBy: 0,
                     cartItems: [],
-                    state: "",
+                    state: "lessons",
                     remove: [],
                 },
                 computed: {
@@ -166,6 +186,9 @@
                     },
                 },
                 methods: {
+                    canAddToCart(lesson) {
+                        return lesson.availableInventory > this.cartItemCount(lesson.id);
+                    },
                     addToCart(lesson) {
                         this.cart.push(lesson.id);
                         var count = {};
