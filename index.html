@@ -118,11 +118,16 @@
                                         <input type="text" id="disabledTextInput" class="form-control" placeholder="+971" disabled />
                                     </div>
                                     <div class="col-sm-8">
-                                        <input class="form-control" type="number" min="0" v-model.number="order.phone" />
+                                        <input v-model.number="order.phone" class="form-control" type="number" v-on:keypress="checkNumber" />
                                     </div>
                                 </div>
-                                <div class="form-group row justify-content-center">
+                                <div class="form-group row justify-content-center" v-if="order.phoneLength>8 && order.name.length>3 ">
                                     <button @click="submitCheckout" class="btn btn-primary">Checkout</button>
+                                    <br />
+                                </div>
+                                <div class="form-group row justify-content-center" v-else>
+                                    <button @click="submitCheckout" class="btn btn-primary" disabled>Checkout</button>
+                                    <br />
                                 </div>
                             </form>
                             <div>
@@ -184,6 +189,7 @@
                         order: {
                             name: "",
                             phone: "",
+                            phoneLength: 0,
                         },
                     },
                     computed: {
@@ -217,6 +223,9 @@
                         },
                     },
                     methods: {
+                        checkNumber(e) {
+                            this.order.phoneLength++;
+                        },
                         canAddToCart(lesson) {
                             return lesson.availableInventory > this.cartItemCount(lesson.id);
                         },
