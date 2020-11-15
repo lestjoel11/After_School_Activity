@@ -113,15 +113,15 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label" for="inputPassword">Phone</label>
+                                    <label class="col-sm-2 col-form-label" for="inputNumber">Phone</label>
                                     <div class="col-sm-2">
                                         <input type="text" id="disabledTextInput" class="form-control" placeholder="+971" disabled />
                                     </div>
                                     <div class="col-sm-8">
-                                        <input v-model.number="order.phone" class="form-control" type="number" v-on:keypress="checkNumber" />
+                                        <input v-model.number="order.phone" class="form-control" id="phoneNumber" type="number" v-on:keypress="checkNumber" required />
                                     </div>
                                 </div>
-                                <div class="form-group row justify-content-center" v-if="order.phoneLength>8 && order.name.length>3 ">
+                                <div class="form-group row justify-content-center" v-if="order.phoneLength>7 && order.name.length>3 ">
                                     <button @click="submitCheckout" class="btn btn-primary">Checkout</button>
                                     <br />
                                 </div>
@@ -224,7 +224,7 @@
                     },
                     methods: {
                         checkNumber(e) {
-                            this.order.phoneLength++;
+                            this.order.phoneLength = document.querySelector("#phoneNumber").value.length;
                         },
                         canAddToCart(lesson) {
                             return lesson.availableInventory > this.cartItemCount(lesson.id);
